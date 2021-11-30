@@ -10,6 +10,8 @@ repositories {
 }
 
 dependencies {
+    implementation("commons-codec:commons-codec:1.15") // 2015.Day04
+
     testImplementation("org.assertj:assertj-core:3.20.2")
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.7.2")
     testImplementation("org.junit.jupiter:junit-jupiter-params:5.7.2")
