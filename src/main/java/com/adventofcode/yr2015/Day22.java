@@ -4,18 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Day22 {
-    record Stats(int damage, int plusArmor, int plusHP, int plusMana){
-        Stats merge(Stats other) {
-            return new Stats(damage + other.damage,
-                    plusArmor + other.plusArmor,
-                    plusHP + other.plusHP,
-                    plusMana + other.plusMana);
-        }
-    };
 
     static abstract class Person {
         protected int hitpoints;
-        protected List<Spell> activeSpells = new ArrayList<>();
+        protected List<Effect> activeSpells = new ArrayList<>();
         protected int armor = 0;
         protected int mana = 0;
 
@@ -23,32 +15,24 @@ public class Day22 {
             this.hitpoints = hitpoints;
         }
 
-        protected void applySpellEffects(Person other) {
-            // first apply all active spells to get effects
-            var damageToMe = other.applyMagic();
-            var myDamage = this.applyMagic();
-            // then apply damage to each other based on that
-            this.hit(damageToMe);
-            other.hit(myDamage);
+        protected void applySpellEffectsToMeAndTo(Person other) {
+            other.doMagicFacing(this);
+            this.doMagicFacing(other);
         }
 
-        private int applyMagic() {
-            var magicOfMe = this.getModificationsFromSpell();
-            this.armor += magicOfMe.plusArmor();
-            this.mana += magicOfMe.plusMana();
-            this.hitpoints += magicOfMe.plusHP();
-
-            return magicOfMe.damage();
-        }
-
-        private Stats getModificationsFromSpell() {
-            Stats magic = new Stats(0, 0, 0, 0);
+        private void doMagicFacing(Person other) {
             for (var spell : this.activeSpells) {
-                magic = magic.merge(spell.stats);
+                spell.applyEachTurn(this, other);
                 spell.decreaseRuntime();
             }
+            removeSpellsWithRuntimeZero(other);
+        }
+
+        private void removeSpellsWithRuntimeZero(Person other) {
+            this.activeSpells.stream()
+                    .filter(s -> !s.isActive())
+                    .forEach(s -> s.applyWhenDone(this, other));
             this.activeSpells.removeIf(s -> !s.isActive());
-            return magic;
         }
 
         protected void hit(int initialDamage) {
@@ -81,11 +65,16 @@ public class Day22 {
         }
 
         void castSpell(Person other, Spell spell) {
-            super.applySpellEffects(other);
+            super.applySpellEffectsToMeAndTo(other);
             if (!this.isDead()) {
                 // cast the new spell
                 this.mana -= spell.costsMana;
-                this.activeSpells.add(spell);
+                if (spell instanceof Effect e) {
+                    e.applyWhenCasting(this, other);
+                    this.activeSpells.add(e);
+                } else if (spell instanceof ImmediateSpell i) {
+                    i.apply(this, other);
+                }
             }
         }
     }
@@ -99,25 +88,38 @@ public class Day22 {
         }
 
         void attack(Player player) {
-            super.applySpellEffects(player);
+            super.applySpellEffectsToMeAndTo(player);
             if (!this.isDead()) {
                 player.hit(damage);
             }
         }
     }
 
-    static class Spell {
+    static abstract class Spell {
         private final String name;
         private final int costsMana;
-        private final Stats stats;
-        private int turns;
 
-        Spell(String name, int costsMana, int turns, int damage, int plusArmor, int plusHP, int plusMana) {
+        Spell(String name, int costsMana) {
             this.name = name;
             this.costsMana = costsMana;
-            this.turns = turns;
-            this.stats = new Stats(damage, plusArmor, plusHP, plusMana);
         }
+
+        public String name() {
+            return name;
+        }
+    }
+
+    static abstract class Effect extends Spell {
+        private int turns;
+
+        Effect(String name, int costsMana, int turns) {
+            super(name, costsMana);
+            this.turns = turns;
+        }
+
+        abstract void applyWhenCasting(Person caster, Person other);
+        abstract void applyEachTurn(Person caster, Person other);
+        abstract void applyWhenDone(Person caster, Person other);
 
         public boolean isActive() {
             return turns > 0;
@@ -126,20 +128,17 @@ public class Day22 {
         int turns() {
             return turns;
         }
-        String name() {
-            return name;
-        }
 
         public void decreaseRuntime() {
             this.turns--;
         }
+    }
 
-        @Override
-        public String toString() {
-            return "Spell{" +
-                    "name='" + name + '\'' +
-                    ", turns=" + turns +
-                    '}';
+    static abstract class ImmediateSpell extends Spell {
+        ImmediateSpell(String name, int costsMana) {
+            super(name, costsMana);
         }
+
+        abstract void apply(Person caster, Person other);
     }
 }
