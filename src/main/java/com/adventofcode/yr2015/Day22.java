@@ -141,4 +141,78 @@ public class Day22 {
 
         abstract void apply(Person caster, Person other);
     }
+
+    enum SpellNames {
+        MAGIC_MISSILE,
+        DRAIN,
+        SHIELD,
+        POISON,
+        RECHARGE
+    }
+
+    static Spell getSpell(SpellNames name) {
+        return switch (name) {
+            case MAGIC_MISSILE -> new ImmediateSpell(name.name(), 53) {
+                @Override
+                void apply(Person caster, Person other) {
+                    other.hit(4);
+                }
+            };
+            case DRAIN -> new ImmediateSpell(name.name(), 73) {
+                @Override
+                void apply(Person caster, Person other) {
+                    caster.hitpoints += 2;
+                    other.hit(2);
+                }
+            };
+            case SHIELD -> new Effect(name.name(), 113, 6) {
+                @Override
+                void applyWhenCasting(Person caster, Person other) {
+                    caster.armor += 7;
+                }
+
+                @Override
+                void applyEachTurn(Person caster, Person other) {
+                    /* nothing */
+                }
+
+                @Override
+                void applyWhenDone(Person caster, Person other) {
+                    caster.armor -= 7;
+                }
+            };
+            case POISON -> new Effect(name.name(), 173, 6) {
+                @Override
+                void applyWhenCasting(Person caster, Person other) {
+                    /* nothing */
+                }
+
+                @Override
+                void applyEachTurn(Person caster, Person other) {
+                    other.hit(3);
+                }
+
+                @Override
+                void applyWhenDone(Person caster, Person other) {
+                    /* nothing */
+                }
+            };
+            case RECHARGE -> new Effect(name.name(), 229, 5) {
+                @Override
+                void applyWhenCasting(Person caster, Person other) {
+                    /* nothing */
+                }
+
+                @Override
+                void applyEachTurn(Person caster, Person other) {
+                    caster.mana += 101;
+                }
+
+                @Override
+                void applyWhenDone(Person caster, Person other) {
+                    /* nothing */
+                }
+            };
+        };
+    }
 }
