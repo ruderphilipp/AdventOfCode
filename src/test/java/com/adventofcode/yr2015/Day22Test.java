@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.fail;
 import static com.adventofcode.yr2015.Day22.*;
+import static com.adventofcode.yr2015.Day22.Person;
 
 /**
  * Little Henry Case decides that defeating bosses with swords and stuff is boring. Now he's playing the game with a
@@ -39,11 +40,79 @@ import static com.adventofcode.yr2015.Day22.*;
  */
 public class Day22Test {
 
-    private final static Spell MAGIC_MISSILE = new Spell("Magic Missile", 53, 1, 4, 0, 0, 0);
-    private final static Spell DRAIN = new Spell("Drain", 73, 1, 2, 0, 2, 0);
-    private final static Spell SHIELD = new Spell("Shield", 113, 6, 0, 7, 0, 0);
-    private final static Spell POISON = new Spell("Poison", 173, 6, 3, 0, 0, 0);
-    private final static Spell RECHARGE = new Spell("Recharge", 229, 5, 0, 0, 0, 101);
+    private enum SpellNames {
+        MAGIC_MISSILE,
+        DRAIN,
+        SHIELD,
+        POISON,
+        RECHARGE
+    }
+
+    private static Spell getSpell(SpellNames name) {
+        return switch (name) {
+            case MAGIC_MISSILE -> new ImmediateSpell(name.name(), 53) {
+                @Override
+                void apply(Person caster, Person other) {
+                    other.hit(4);
+                }
+            };
+            case DRAIN -> new ImmediateSpell(name.name(), 73) {
+                @Override
+                void apply(Person caster, Person other) {
+                    caster.hitpoints += 2;
+                    other.hit(2);
+                }
+            };
+            case SHIELD -> new Effect(name.name(), 113, 6) {
+                @Override
+                void applyWhenCasting(Person caster, Person other) {
+                    caster.armor += 7;
+                }
+
+                @Override
+                void applyEachTurn(Person caster, Person other) {
+                    /* nothing */
+                }
+
+                @Override
+                void applyWhenDone(Person caster, Person other) {
+                    caster.armor -= 7;
+                }
+            };
+            case POISON -> new Effect(name.name(), 173, 6) {
+                @Override
+                void applyWhenCasting(Person caster, Person other) {
+                    /* nothing */
+                }
+
+                @Override
+                void applyEachTurn(Person caster, Person other) {
+                    other.hit(3);
+                }
+
+                @Override
+                void applyWhenDone(Person caster, Person other) {
+                    /* nothing */
+                }
+            };
+            case RECHARGE -> new Effect(name.name(), 229, 5) {
+                @Override
+                void applyWhenCasting(Person caster, Person other) {
+                    /* nothing */
+                }
+
+                @Override
+                void applyEachTurn(Person caster, Person other) {
+                    caster.mana += 101;
+                }
+
+                @Override
+                void applyWhenDone(Person caster, Person other) {
+                    /* nothing */
+                }
+            };
+        };
+    }
 
     /**
      * You start with 50 hit points and 500 mana points. The boss's actual stats are in your puzzle input.
@@ -88,9 +157,9 @@ public class Day22Test {
     @Test
     void example01_1() {
         // Player has 10 hit points, 0 armor, 250 mana
-        var player = new Player(10, 250);
+        final var player = new Player(10, 250);
         // Boss has 13 hit points and 8 damage
-        var boss = new Enemy(13, 8);
+        final var boss = new Enemy(13, 8);
 
         //region -- Player turn (1) --
         // - Player has 10 hit points, 0 armor, 250 mana
@@ -100,12 +169,13 @@ public class Day22Test {
         assertThat(player.mana()).isEqualTo(250);
         assertThat(boss.hitpoints()).isEqualTo(13);
         //
-        player.castSpell(boss, POISON);
+        player.castSpell(boss, getSpell(SpellNames.POISON));
+        final var namePoison = SpellNames.POISON.name();
         //
         assertThat(boss.hitpoints()).isEqualTo(13);
         //
         assertThat(player.activeSpells.size()).isEqualTo(1);
-        assertThat(player.activeSpells.get(0).name()).isEqualTo(POISON.name());
+        assertThat(player.activeSpells.get(0).name()).isEqualTo(namePoison);
         assertThat(player.activeSpells.get(0).turns()).isEqualTo(6);
         //
         assertThat(boss.isDead()).isFalse();
@@ -126,7 +196,7 @@ public class Day22Test {
         assertThat(boss.hitpoints()).isEqualTo(10);
         //
         assertThat(player.activeSpells.size()).isEqualTo(1);
-        assertThat(player.activeSpells.get(0).name()).isEqualTo(POISON.name());
+        assertThat(player.activeSpells.get(0).name()).isEqualTo(namePoison);
         assertThat(player.activeSpells.get(0).turns()).isEqualTo(5);
         //
         assertThat(boss.isDead()).isFalse();
@@ -142,13 +212,11 @@ public class Day22Test {
         assertThat(player.mana()).isEqualTo(77);
         assertThat(boss.hitpoints()).isEqualTo(10);
         //
-        player.castSpell(boss, MAGIC_MISSILE);
+        player.castSpell(boss, getSpell(SpellNames.MAGIC_MISSILE));
         //
-        assertThat(player.activeSpells.size()).isEqualTo(2);
-        assertThat(player.activeSpells.get(0).name()).isEqualTo(POISON.name());
+        assertThat(player.activeSpells.size()).isEqualTo(1);
+        assertThat(player.activeSpells.get(0).name()).isEqualTo(namePoison);
         assertThat(player.activeSpells.get(0).turns()).isEqualTo(4);
-        assertThat(player.activeSpells.get(1).name()).isEqualTo(MAGIC_MISSILE.name());
-        assertThat(player.activeSpells.get(1).turns()).isEqualTo(1);
         //
         assertThat(boss.isDead()).isFalse();
         assertThat(player.isDead()).isFalse();
@@ -168,7 +236,7 @@ public class Day22Test {
         //endregion
     }
 
-    /*
+    /**
      * <p>
      * Now, suppose the same initial conditions, except that the boss has 14 hit points instead:
      * -- Player turn (1) --
@@ -238,9 +306,225 @@ public class Day22Test {
      */
     @Test
     void example01_2() {
-        var player = new Player(10, 250);
-        var boss = new Enemy(14, 8);
+        final var player = new Player(10, 250);
+        final var boss = new Enemy(14, 8);
 
-        fail("implementation missing");
+        //region -- Player turn (1) --
+        // - Player has 10 hit points, 0 armor, 250 mana
+        // - Boss has 14 hit points
+        // Player casts Recharge.
+        assertThat(player.hitpoints()).isEqualTo(10);
+        assertThat(player.armor()).isEqualTo(0);
+        assertThat(player.mana()).isEqualTo(250);
+        assertThat(boss.hitpoints()).isEqualTo(14);
+        //
+        player.castSpell(boss, getSpell(SpellNames.RECHARGE));
+        var nameRecharge = SpellNames.RECHARGE.name();
+        //
+        assertThat(player.activeSpells.size()).isEqualTo(1);
+        assertThat(player.activeSpells.get(0).name()).isEqualTo(nameRecharge);
+        assertThat(player.activeSpells.get(0).turns()).isEqualTo(5);
+        //
+        assertThat(boss.isDead()).isFalse();
+        assertThat(player.isDead()).isFalse();
+        //endregion
+
+        //region -- Boss turn (1) --
+        // - Player has 10 hit points, 0 armor, 21 mana
+        // - Boss has 14 hit points
+        // Recharge provides 101 mana; its timer is now 4.
+        // Boss attacks for 8 damage!
+        assertThat(player.hitpoints()).isEqualTo(10);
+        assertThat(player.armor()).isEqualTo(0);
+        assertThat(player.mana()).isEqualTo(21);
+        assertThat(boss.hitpoints()).isEqualTo(14);
+        //
+        boss.attack(player);
+        //
+        assertThat(boss.hitpoints()).isEqualTo(14);
+        //
+        assertThat(player.activeSpells.size()).isEqualTo(1);
+        assertThat(player.activeSpells.get(0).name()).isEqualTo(nameRecharge);
+        assertThat(player.activeSpells.get(0).turns()).isEqualTo(4);
+        //
+        assertThat(boss.isDead()).isFalse();
+        assertThat(player.isDead()).isFalse();
+        //endregion
+
+        //region -- Player turn (2) --
+        // - Player has 2 hit points, 0 armor, 122 mana
+        // - Boss has 14 hit points
+        // Recharge provides 101 mana; its timer is now 3.
+        // Player casts Shield, increasing armor by 7.
+        assertThat(player.hitpoints()).isEqualTo(2);
+        assertThat(player.armor()).isEqualTo(0);
+        assertThat(player.mana()).isEqualTo(122);
+        assertThat(boss.hitpoints()).isEqualTo(14);
+        //
+        player.castSpell(boss, getSpell(SpellNames.SHIELD));
+        final var nameShield = SpellNames.SHIELD.name();
+        //
+        assertThat(player.activeSpells.size()).isEqualTo(2);
+        assertThat(player.activeSpells.get(0).name()).isEqualTo(nameRecharge);
+        assertThat(player.activeSpells.get(0).turns()).isEqualTo(3);
+        assertThat(player.activeSpells.get(1).name()).isEqualTo(nameShield);
+        assertThat(player.activeSpells.get(1).turns()).isEqualTo(6);
+        //
+        assertThat(boss.isDead()).isFalse();
+        assertThat(player.isDead()).isFalse();
+        //endregion
+
+        //region -- Boss turn (2) --
+        // - Player has 2 hit points, 7 armor, 110 mana
+        // - Boss has 14 hit points
+        // Shield's timer is now 5.
+        // Recharge provides 101 mana; its timer is now 2.
+        // Boss attacks for 8 - 7 = 1 damage!
+        assertThat(player.hitpoints()).isEqualTo(2);
+        assertThat(player.armor()).isEqualTo(7);
+        assertThat(player.mana()).isEqualTo(110);
+        assertThat(boss.hitpoints()).isEqualTo(14);
+        //
+        boss.attack(player);
+        //
+        assertThat(boss.hitpoints()).isEqualTo(14);
+        //
+        assertThat(player.activeSpells.size()).isEqualTo(2);
+        assertThat(player.activeSpells.get(0).name()).isEqualTo(nameRecharge);
+        assertThat(player.activeSpells.get(0).turns()).isEqualTo(2);
+        assertThat(player.activeSpells.get(1).name()).isEqualTo(nameShield);
+        assertThat(player.activeSpells.get(1).turns()).isEqualTo(5);
+        //
+        assertThat(boss.isDead()).isFalse();
+        assertThat(player.isDead()).isFalse();
+        //endregion
+
+        //region -- Player turn (3) --
+        // - Player has 1 hit point, 7 armor, 211 mana
+        // - Boss has 14 hit points
+        // Shield's timer is now 4.
+        // Recharge provides 101 mana; its timer is now 1.
+        // Player casts Drain, dealing 2 damage, and healing 2 hit points.
+        assertThat(player.hitpoints()).isEqualTo(1);
+        assertThat(player.armor()).isEqualTo(7);
+        assertThat(player.mana()).isEqualTo(211);
+        assertThat(boss.hitpoints()).isEqualTo(14);
+        //
+        player.castSpell(boss, getSpell(SpellNames.DRAIN));
+        //
+        assertThat(player.activeSpells.size()).isEqualTo(2);
+        assertThat(player.activeSpells.get(0).name()).isEqualTo(nameRecharge);
+        assertThat(player.activeSpells.get(0).turns()).isEqualTo(1);
+        assertThat(player.activeSpells.get(1).name()).isEqualTo(nameShield);
+        assertThat(player.activeSpells.get(1).turns()).isEqualTo(4);
+        //
+        assertThat(boss.isDead()).isFalse();
+        assertThat(player.isDead()).isFalse();
+        //endregion
+
+        //region -- Boss turn (3) --
+        // - Player has 3 hit points, 7 armor, 239 mana
+        // - Boss has 12 hit points
+        // Shield's timer is now 3.
+        // Recharge provides 101 mana; its timer is now 0.
+        // Recharge wears off.
+        // Boss attacks for 8 - 7 = 1 damage!
+        assertThat(player.hitpoints()).isEqualTo(3);
+        assertThat(player.armor()).isEqualTo(7);
+        assertThat(player.mana()).isEqualTo(239);
+        assertThat(boss.hitpoints()).isEqualTo(12);
+        //
+        boss.attack(player);
+        //
+        assertThat(player.activeSpells.size()).isEqualTo(1);
+        assertThat(player.activeSpells.get(0).name()).isEqualTo(nameShield);
+        assertThat(player.activeSpells.get(0).turns()).isEqualTo(3);
+        //
+        assertThat(boss.isDead()).isFalse();
+        assertThat(player.isDead()).isFalse();
+        //endregion
+
+        //region -- Player turn (4) --
+        // - Player has 2 hit points, 7 armor, 340 mana
+        // - Boss has 12 hit points
+        // Shield's timer is now 2.
+        // Player casts Poison.
+        assertThat(player.hitpoints()).isEqualTo(2);
+        assertThat(player.armor()).isEqualTo(7);
+        assertThat(player.mana()).isEqualTo(340);
+        assertThat(boss.hitpoints()).isEqualTo(12);
+        //
+        player.castSpell(boss, getSpell(SpellNames.POISON));
+        final var namePoison = SpellNames.POISON.name();
+        //
+        assertThat(player.activeSpells.size()).isEqualTo(2);
+        assertThat(player.activeSpells.get(0).name()).isEqualTo(nameShield);
+        assertThat(player.activeSpells.get(0).turns()).isEqualTo(2);
+        assertThat(player.activeSpells.get(1).name()).isEqualTo(namePoison);
+        assertThat(player.activeSpells.get(1).turns()).isEqualTo(6);
+        //
+        assertThat(boss.isDead()).isFalse();
+        assertThat(player.isDead()).isFalse();
+        //endregion
+
+        //region -- Boss turn (4) --
+        // - Player has 2 hit points, 7 armor, 167 mana
+        // - Boss has 12 hit points
+        // Shield's timer is now 1.
+        // Poison deals 3 damage; its timer is now 5.
+        // Boss attacks for 8 - 7 = 1 damage!
+        assertThat(player.hitpoints()).isEqualTo(2);
+        assertThat(player.armor()).isEqualTo(7);
+        assertThat(player.mana()).isEqualTo(167);
+        assertThat(boss.hitpoints()).isEqualTo(12);
+        //
+        boss.attack(player);
+        //
+        assertThat(player.activeSpells.size()).isEqualTo(2);
+        assertThat(player.activeSpells.get(0).name()).isEqualTo(nameShield);
+        assertThat(player.activeSpells.get(0).turns()).isEqualTo(1);
+        assertThat(player.activeSpells.get(1).name()).isEqualTo(namePoison);
+        assertThat(player.activeSpells.get(1).turns()).isEqualTo(5);
+        //
+        assertThat(boss.isDead()).isFalse();
+        assertThat(player.isDead()).isFalse();
+        //endregion
+
+        //region -- Player turn (5) --
+        // - Player has 1 hit point, 7 armor, 167 mana
+        // - Boss has 9 hit points
+        // Shield's timer is now 0.
+        // Shield wears off, decreasing armor by 7.
+        // Poison deals 3 damage; its timer is now 4.
+        // Player casts Magic Missile, dealing 4 damage.
+        assertThat(player.hitpoints()).isEqualTo(1);
+        assertThat(player.armor()).isEqualTo(7);
+        assertThat(player.mana()).isEqualTo(167);
+        assertThat(boss.hitpoints()).isEqualTo(9);
+        //
+        player.castSpell(boss, getSpell(SpellNames.MAGIC_MISSILE));
+        //
+        assertThat(player.activeSpells.size()).isEqualTo(1);
+        assertThat(player.activeSpells.get(0).name()).isEqualTo(namePoison);
+        assertThat(player.activeSpells.get(0).turns()).isEqualTo(4);
+        //
+        assertThat(boss.isDead()).isFalse();
+        assertThat(player.isDead()).isFalse();
+        //endregion
+
+        //region -- Boss turn (5) --
+        // - Player has 1 hit point, 0 armor, 114 mana
+        // - Boss has 2 hit points
+        // Poison deals 3 damage. This kills the boss, and the player wins.
+        assertThat(player.hitpoints()).isEqualTo(1);
+        assertThat(player.armor()).isEqualTo(0);
+        assertThat(player.mana()).isEqualTo(114);
+        assertThat(boss.hitpoints()).isEqualTo(2);
+        //
+        boss.attack(player);
+        //
+        assertThat(boss.isDead()).isTrue();
+        assertThat(player.isDead()).isFalse();
+        //endregion
     }
 }
