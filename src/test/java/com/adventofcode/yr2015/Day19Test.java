@@ -140,4 +140,9 @@ public class Day19Test {
         int result = calculateFabricationSteps("HOHOHO", instructions_02);
         assertThat(result).isEqualTo(6);
     }
+    @Test
+    void example02_failure_should_return_maxInt() {
+        int result = calculateFabricationSteps("HOHOHOa", instructions_02);
+        assertThat(result).isEqualTo(Integer.MAX_VALUE);
+    }
 }
