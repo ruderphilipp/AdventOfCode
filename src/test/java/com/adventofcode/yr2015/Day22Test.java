@@ -2,10 +2,10 @@ package com.adventofcode.yr2015;
 
 import org.junit.jupiter.api.Test;
 
+import static com.adventofcode.yr2015.Day22.SpellNames.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.fail;
 import static com.adventofcode.yr2015.Day22.*;
-import static com.adventofcode.yr2015.Day22.Person;
 
 /**
  * Little Henry Case decides that defeating bosses with swords and stuff is boring. Now he's playing the game with a
@@ -39,80 +39,6 @@ import static com.adventofcode.yr2015.Day22.Person;
  * that would start an effect which is already active. However, effects can be started on the same turn they end.
  */
 public class Day22Test {
-
-    private enum SpellNames {
-        MAGIC_MISSILE,
-        DRAIN,
-        SHIELD,
-        POISON,
-        RECHARGE
-    }
-
-    private static Spell getSpell(SpellNames name) {
-        return switch (name) {
-            case MAGIC_MISSILE -> new ImmediateSpell(name.name(), 53) {
-                @Override
-                void apply(Person caster, Person other) {
-                    other.hit(4);
-                }
-            };
-            case DRAIN -> new ImmediateSpell(name.name(), 73) {
-                @Override
-                void apply(Person caster, Person other) {
-                    caster.hitpoints += 2;
-                    other.hit(2);
-                }
-            };
-            case SHIELD -> new Effect(name.name(), 113, 6) {
-                @Override
-                void applyWhenCasting(Person caster, Person other) {
-                    caster.armor += 7;
-                }
-
-                @Override
-                void applyEachTurn(Person caster, Person other) {
-                    /* nothing */
-                }
-
-                @Override
-                void applyWhenDone(Person caster, Person other) {
-                    caster.armor -= 7;
-                }
-            };
-            case POISON -> new Effect(name.name(), 173, 6) {
-                @Override
-                void applyWhenCasting(Person caster, Person other) {
-                    /* nothing */
-                }
-
-                @Override
-                void applyEachTurn(Person caster, Person other) {
-                    other.hit(3);
-                }
-
-                @Override
-                void applyWhenDone(Person caster, Person other) {
-                    /* nothing */
-                }
-            };
-            case RECHARGE -> new Effect(name.name(), 229, 5) {
-                @Override
-                void applyWhenCasting(Person caster, Person other) {
-                    /* nothing */
-                }
-
-                @Override
-                void applyEachTurn(Person caster, Person other) {
-                    caster.mana += 101;
-                }
-
-                @Override
-                void applyWhenDone(Person caster, Person other) {
-                    /* nothing */
-                }
-            };
-        };
-    }
 
     /**
      * You start with 50 hit points and 500 mana points. The boss's actual stats are in your puzzle input.
@@ -169,8 +95,8 @@ public class Day22Test {
         assertThat(player.mana()).isEqualTo(250);
         assertThat(boss.hitpoints()).isEqualTo(13);
         //
-        player.castSpell(boss, getSpell(SpellNames.POISON));
-        final var namePoison = SpellNames.POISON.name();
+        player.castSpell(boss, getSpell(POISON));
+        final var namePoison = POISON.name();
         //
         assertThat(boss.hitpoints()).isEqualTo(13);
         //
@@ -212,7 +138,7 @@ public class Day22Test {
         assertThat(player.mana()).isEqualTo(77);
         assertThat(boss.hitpoints()).isEqualTo(10);
         //
-        player.castSpell(boss, getSpell(SpellNames.MAGIC_MISSILE));
+        player.castSpell(boss, getSpell(MAGIC_MISSILE));
         //
         assertThat(player.activeSpells.size()).isEqualTo(1);
         assertThat(player.activeSpells.get(0).name()).isEqualTo(namePoison);
@@ -318,8 +244,8 @@ public class Day22Test {
         assertThat(player.mana()).isEqualTo(250);
         assertThat(boss.hitpoints()).isEqualTo(14);
         //
-        player.castSpell(boss, getSpell(SpellNames.RECHARGE));
-        var nameRecharge = SpellNames.RECHARGE.name();
+        player.castSpell(boss, getSpell(RECHARGE));
+        var nameRecharge = RECHARGE.name();
         //
         assertThat(player.activeSpells.size()).isEqualTo(1);
         assertThat(player.activeSpells.get(0).name()).isEqualTo(nameRecharge);
@@ -361,8 +287,8 @@ public class Day22Test {
         assertThat(player.mana()).isEqualTo(122);
         assertThat(boss.hitpoints()).isEqualTo(14);
         //
-        player.castSpell(boss, getSpell(SpellNames.SHIELD));
-        final var nameShield = SpellNames.SHIELD.name();
+        player.castSpell(boss, getSpell(SHIELD));
+        final var nameShield = SHIELD.name();
         //
         assertThat(player.activeSpells.size()).isEqualTo(2);
         assertThat(player.activeSpells.get(0).name()).isEqualTo(nameRecharge);
@@ -410,7 +336,7 @@ public class Day22Test {
         assertThat(player.mana()).isEqualTo(211);
         assertThat(boss.hitpoints()).isEqualTo(14);
         //
-        player.castSpell(boss, getSpell(SpellNames.DRAIN));
+        player.castSpell(boss, getSpell(DRAIN));
         //
         assertThat(player.activeSpells.size()).isEqualTo(2);
         assertThat(player.activeSpells.get(0).name()).isEqualTo(nameRecharge);
@@ -454,8 +380,8 @@ public class Day22Test {
         assertThat(player.mana()).isEqualTo(340);
         assertThat(boss.hitpoints()).isEqualTo(12);
         //
-        player.castSpell(boss, getSpell(SpellNames.POISON));
-        final var namePoison = SpellNames.POISON.name();
+        player.castSpell(boss, getSpell(POISON));
+        final var namePoison = POISON.name();
         //
         assertThat(player.activeSpells.size()).isEqualTo(2);
         assertThat(player.activeSpells.get(0).name()).isEqualTo(nameShield);
@@ -502,7 +428,7 @@ public class Day22Test {
         assertThat(player.mana()).isEqualTo(167);
         assertThat(boss.hitpoints()).isEqualTo(9);
         //
-        player.castSpell(boss, getSpell(SpellNames.MAGIC_MISSILE));
+        player.castSpell(boss, getSpell(MAGIC_MISSILE));
         //
         assertThat(player.activeSpells.size()).isEqualTo(1);
         assertThat(player.activeSpells.get(0).name()).isEqualTo(namePoison);
