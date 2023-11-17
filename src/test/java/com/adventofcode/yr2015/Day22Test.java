@@ -575,7 +575,7 @@ public class Day22Test {
     void example01_2_new() {
         // Player has 10 hit points, 0 armor, 250 mana
         final var player = new Player(10, 250);
-        // Boss has 13 hit points and 8 damage
+        // Boss has 14 hit points and 8 damage
         final var boss = new Enemy(14, 8);
         // spells from player (enemy has only one form of attack)
         final var spells = List.of(
@@ -602,7 +602,7 @@ public class Day22Test {
     void example01_2_min() {
         // Player has 10 hit points, 0 armor, 250 mana
         final var player = new Player(10, 250);
-        // Boss has 13 hit points and 8 damage
+        // Boss has 14 hit points and 8 damage
         final var boss = new Enemy(14, 8);
 
         var mana = calculateMinimalSpendingToWin(player, boss);
