@@ -10,7 +10,7 @@ public class Day22 {
      */
     static int calculateMinimalSpendingToWin(Player player, Enemy boss) {
         var x = calculateMinimalSpending(player, boss, List.of());
-        var y = new TreeMap(x);
+        var y = new TreeMap<>(x);
         System.out.println(y);
         return x.keySet().stream().mapToInt(Integer::intValue).min().orElse(Integer.MAX_VALUE);
     }
