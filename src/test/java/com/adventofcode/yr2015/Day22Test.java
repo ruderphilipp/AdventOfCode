@@ -203,6 +203,7 @@ public class Day22Test {
         // Poison deals 3 damage. This kills the boss, and the player wins.
         assertThat(player.hitpoints()).isEqualTo(2);
         assertThat(player.mana()).isEqualTo(24);
+        assertThat(boss.hitpoints()).isEqualTo(3);
         //
         boss.attack(player);
         //
