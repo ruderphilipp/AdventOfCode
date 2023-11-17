@@ -65,7 +65,8 @@ public class Day22Test {
         assertThat(mana).isNotEqualTo(967);
         assertThat(mana).isNotEqualTo(974);
         assertThat(mana).isNotEqualTo(987);
-        assertThat(mana).isNotEqualTo(1216);
+        assertThat(mana).isNotEqualTo(1143); // too low
+        assertThat(mana).isNotEqualTo(1216); // too low
 
         assertThat(mana).isEqualTo(-1);
         /*
