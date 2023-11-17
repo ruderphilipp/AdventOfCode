@@ -1,7 +1,6 @@
 package com.adventofcode.yr2015;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class Day22 {
 
