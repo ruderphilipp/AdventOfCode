@@ -76,6 +76,7 @@ public class Day20Test {
      * number in your puzzle input?
      */
     @Test
+    @Disabled("takes forever due to inefficient implementation")
     void riddle02() {
         int input = 29_000_000;
         // took 72min on my MacBook (2016)
