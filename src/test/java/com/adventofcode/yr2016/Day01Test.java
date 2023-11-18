@@ -131,7 +131,7 @@ public class Day01Test {
         );
 
         // when
-        var path = new Day01_2016(input, true);
+        var path = new Day01_2016_withPathCollision(input);
         var resultCoordinate = path.getCoordinate();
         var result = path.getDistance();
 
@@ -151,7 +151,7 @@ public class Day01Test {
         var values = input.get(0).split(", ");
 
         // when
-        var path = new Day01_2016(Arrays.asList(values), true);
+        var path = new Day01_2016_withPathCollision(Arrays.asList(values));
         var resultCoordinate = path.getCoordinate();
         var result = path.getDistance();
 
