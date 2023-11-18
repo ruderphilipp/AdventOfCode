@@ -69,7 +69,7 @@ public class Day08Test {
         // What is "the number of characters of code for string literals" minus
         // "the number of characters in memory for the values of the strings in total" for the entire file?
     void riddle01() {
-        String fileName = "day08.txt";
+        String fileName = "2015_08.txt";
         var lines = FileHelper.getFileContent(fileName);
         assertThat(lines).isNotEmpty();
 
@@ -104,7 +104,7 @@ public class Day08Test {
      */
     @Test
     void riddle02() {
-        String fileName = "day08.txt";
+        String fileName = "2015_08.txt";
         var lines = FileHelper.getFileContent(fileName);
         assertThat(lines).isNotEmpty();
 

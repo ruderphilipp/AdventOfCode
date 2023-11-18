@@ -54,7 +54,7 @@ public class Day02Test {
 
     @Test
     void riddle01() {
-        String fileName = "day02.txt";
+        String fileName = "2015_02.txt";
         var lines = FileHelper.getFileContent(fileName);
         assertThat(Day02.getAreaWithSlack(lines)).isEqualTo(1586300);
     }
@@ -91,7 +91,7 @@ public class Day02Test {
 
     @Test
     void riddle02() {
-        String fileName = "day02.txt";
+        String fileName = "2015_02.txt";
         var lines = FileHelper.getFileContent(fileName);
         assertThat(Day02.getRibbonLengthWithBow(lines)).isEqualTo(3737498);
     }

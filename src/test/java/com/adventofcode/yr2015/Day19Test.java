@@ -32,7 +32,7 @@ public class Day19Test {
      */
     @Test
     void riddle01() {
-        String fileName = "day19.txt";
+        String fileName = "2015_19.txt";
         List<String> lines = FileHelper.getFileContent(fileName);
         assertThat(lines).isNotEmpty();
         assertThat(lines.size()).isGreaterThan(3);
@@ -55,7 +55,7 @@ public class Day19Test {
      */
     @Test
     void riddle02() {
-        String fileName = "day19.txt";
+        String fileName = "2015_19.txt";
         List<String> lines = FileHelper.getFileContent(fileName);
         assertThat(lines).isNotEmpty();
         assertThat(lines.size()).isGreaterThan(3);

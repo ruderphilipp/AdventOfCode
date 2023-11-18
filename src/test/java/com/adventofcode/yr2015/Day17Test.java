@@ -26,7 +26,7 @@ public class Day17Test {
      */
     @Test
     void riddle01() {
-        String fileName = "day17.txt";
+        String fileName = "2015_17.txt";
         List<String> lines = FileHelper.getFileContent(fileName);
         assertThat(lines).isNotEmpty();
         // every line is one container (size)
@@ -77,7 +77,7 @@ public class Day17Test {
      */
     @Test
     void riddle02() {
-        String fileName = "day17.txt";
+        String fileName = "2015_17.txt";
         List<String> lines = FileHelper.getFileContent(fileName);
         assertThat(lines).isNotEmpty();
         // every line is one container (size)

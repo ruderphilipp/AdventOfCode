@@ -119,7 +119,7 @@ public class Day16Test {
     }
 
     private AuntSue calc(Filter f) {
-        String fileName = "day16.txt";
+        String fileName = "2015_16.txt";
         List<String> lines = FileHelper.getFileContent(fileName);
         assertThat(lines).isNotEmpty();
 

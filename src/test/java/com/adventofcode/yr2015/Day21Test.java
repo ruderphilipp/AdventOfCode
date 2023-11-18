@@ -109,7 +109,7 @@ public class Day21Test {
     }
 
     Person player = new Person(100, 0, 0);
-    Person enemy = getFromFile("day21.txt");
+    Person enemy = getFromFile("2015_21.txt");
 
     List<Item> weapons = List.of(
             new Item("Dagger", 8, 4, 0),

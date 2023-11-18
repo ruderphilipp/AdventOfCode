@@ -51,7 +51,7 @@ public class Day05Test {
 
     @Test
     void riddle01() {
-        String fileName = "day05.txt";
+        String fileName = "2015_05.txt";
         var lines = FileHelper.getFileContent(fileName);
         var count = 0;
         for (String l : lines) {
@@ -106,7 +106,7 @@ public class Day05Test {
 
     @Test
     void riddle02() {
-        String fileName = "day05.txt";
+        String fileName = "2015_05.txt";
         var lines = FileHelper.getFileContent(fileName);
         var count = 0;
         for (String l : lines) {

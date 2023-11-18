@@ -77,7 +77,7 @@ public class Day07Test {
     @Test
         // What signal is ultimately provided to wire a?
     void riddle01() throws IOException, URISyntaxException {
-        String fileName = "day07.txt";
+        String fileName = "2015_07.txt";
         var lines = FileHelper.getFileContent(fileName);
         assertThat(lines).isNotEmpty();
         Day07 sut = new Day07();
@@ -91,7 +91,7 @@ public class Day07Test {
         // Now, take the signal you got on wire a, override wire b to that signal, and reset the other wires (including wire a).
         // What new signal is ultimately provided to wire a?
     void riddle02() {
-        String fileName = "day07.txt";
+        String fileName = "2015_07.txt";
         var lines = FileHelper.getFileContent(fileName);
         assertThat(lines).isNotEmpty();
         //

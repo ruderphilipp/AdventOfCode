@@ -54,7 +54,7 @@ public class Day18Test {
     void riddle01() {
         int steps = 100;
         //
-        String fileName = "day18.txt";
+        String fileName = "2015_18.txt";
         List<String> lines = FileHelper.getFileContent(fileName);
         assertThat(lines).isNotEmpty();
 
@@ -74,7 +74,7 @@ public class Day18Test {
     void riddle02() {
         int steps = 100;
         //
-        String fileName = "day18.txt";
+        String fileName = "2015_18.txt";
         List<String> lines = FileHelper.getFileContent(fileName);
         assertThat(lines).isNotEmpty();
 

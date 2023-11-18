@@ -35,7 +35,7 @@ public class Day01Test {
 
     @Test
     void riddle01() throws IOException, URISyntaxException {
-        String fileName = "day01.txt";
+        String fileName = "2015_01.txt";
         var lines = FileHelper.getFileContent(fileName);
         assertThat(lines).hasSize(1);
         assertThat(Day01.getFloor(lines.get(0))).isEqualTo(232);
@@ -61,7 +61,7 @@ public class Day01Test {
 
     @Test
     void riddle02() {
-        String fileName = "day01.txt";
+        String fileName = "2015_01.txt";
         var lines = FileHelper.getFileContent(fileName);
         assertThat(lines).hasSize(1);
         assertThat(Day01.findBasement(lines.get(0))).isEqualTo(1783);

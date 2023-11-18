@@ -41,7 +41,7 @@ public class Day09Test {
      */
     @Test
     void riddle01() {
-        String fileName = "day09.txt";
+        String fileName = "2015_09.txt";
         var lines = FileHelper.getFileContent(fileName);
         assertThat(lines).isNotEmpty();
         Day09 sut = new Day09(lines);
@@ -80,7 +80,7 @@ public class Day09Test {
      */
     @Test
     void riddle02() {
-        String fileName = "day09.txt";
+        String fileName = "2015_09.txt";
         var lines = FileHelper.getFileContent(fileName);
         assertThat(lines).isNotEmpty();
         Day09 sut = new Day09(lines);

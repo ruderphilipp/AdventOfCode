@@ -65,7 +65,7 @@ public class Day06Test {
 
     @Test
     void riddle01() {
-        String fileName = "day06.txt";
+        String fileName = "2015_06.txt";
         var lines = FileHelper.getFileContent(fileName);
 
         // 150ms
@@ -120,7 +120,7 @@ public class Day06Test {
 
     @Test
     void riddle02() {
-        String fileName = "day06.txt";
+        String fileName = "2015_06.txt";
         var lines = FileHelper.getFileContent(fileName);
 
         // 68ms

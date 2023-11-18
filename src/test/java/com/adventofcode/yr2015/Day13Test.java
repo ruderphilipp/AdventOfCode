@@ -82,7 +82,7 @@ public class Day13Test {
      */
     @Test
     void riddle01() {
-        String fileName = "day13.txt";
+        String fileName = "2015_13.txt";
         var lines = FileHelper.getFileContent(fileName);
         Day13 sut = new Day13();
         sut.parse(lines);
@@ -103,7 +103,7 @@ public class Day13Test {
     @Test
     @Disabled
     void riddle02() {
-        String fileName = "day13.txt";
+        String fileName = "2015_13.txt";
         var lines = FileHelper.getFileContent(fileName);
         Day13 sut = new Day13();
         sut.parse(lines);

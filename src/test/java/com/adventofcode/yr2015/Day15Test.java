@@ -90,7 +90,7 @@ public class Day15Test {
     void riddle01() {
         final int SPOONS = 100;
 
-        String fileName = "day15.txt";
+        String fileName = "2015_15.txt";
         var lines = FileHelper.getFileContent(fileName);
         var sut = new Day15(lines);
         var highestScore = sut.getHighestScore(SPOONS);
@@ -125,7 +125,7 @@ public class Day15Test {
         final int SPOONS = 100;
         final int CALORIES = 500;
 
-        String fileName = "day15.txt";
+        String fileName = "2015_15.txt";
         var lines = FileHelper.getFileContent(fileName);
         var sut = new Day15(lines);
         var highestScore = sut.getHighestScoreWithCaloryLimit(SPOONS, CALORIES);

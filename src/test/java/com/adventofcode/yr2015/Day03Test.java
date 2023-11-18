@@ -35,7 +35,7 @@ public class Day03Test {
 
     @Test
     void riddle01() {
-        String fileName = "day03.txt";
+        String fileName = "2015_03.txt";
         var lines = FileHelper.getFileContent(fileName);
         assertThat(lines).hasSize(1);
         assertThat(Day03.countHouses2(lines.get(0))).isEqualTo(2565);

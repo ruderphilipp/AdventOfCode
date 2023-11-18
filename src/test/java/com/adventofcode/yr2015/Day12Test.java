@@ -30,7 +30,7 @@ public class Day12Test {
      */
     @Test
     void riddle01() {
-        String fileName = "day12.txt";
+        String fileName = "2015_12.txt";
         var lines = FileHelper.getFileContent(fileName);
         assertThat(lines).hasSize(1);
         long sum = getSum(lines.get(0));
@@ -61,7 +61,7 @@ public class Day12Test {
      */
     @Test
     void riddle02() {
-        // String fileName = "day12.txt"; // got a StackOverflowError with my implementation
+        // String fileName = "2015_12.txt"; // got a StackOverflowError with my implementation
         String fileName = "day12_manuallyStripped.json";
         var lines = FileHelper.getFileContent(fileName);
         assertThat(lines).hasSize(1);

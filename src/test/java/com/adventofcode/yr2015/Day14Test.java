@@ -100,7 +100,7 @@ public class Day14Test {
     void riddle01() {
         final int TIME = 2503;
 
-        String fileName = "day14.txt";
+        String fileName = "2015_14.txt";
         var lines = FileHelper.getFileContent(fileName);
         Day14 sut = new Day14(lines);
         var result = sut.getDistances(TIME);
@@ -166,7 +166,7 @@ public class Day14Test {
     void riddle02() {
         final int TIME = 2503;
 
-        String fileName = "day14.txt";
+        String fileName = "2015_14.txt";
         var lines = FileHelper.getFileContent(fileName);
         Day14 sut = new Day14(lines);
         var result = sut.getPoints(TIME);
