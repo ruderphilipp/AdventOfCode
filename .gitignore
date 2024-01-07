@@ -1,3 +1,5 @@
+# sources with copyright
+src/test/resources/*
 
 # Created by https://www.toptal.com/developers/gitignore/api/intellij,git,gradle
 # Edit at https://www.toptal.com/developers/gitignore?templates=intellij,git,gradle
